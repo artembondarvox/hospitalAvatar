@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "Auth";
+option java_package = "com.voximplant.avatar.auth";
+
+/**
+ * Performs login with the specified credentials.
+ * See the possible authorization options in the [Management API authorization](/docs/guides/managementapi/authorization) article.
+ * Response contains a token required for using all other API methods.
+ */
+service Login {
+  rpc Login(LoginRequest) returns (LoginResponse) {}
+}
+
+/**
+ * Request structure of the [Login] method.
+ */
+message LoginRequest {
+
+  /**
+   * Unique Voximplant account's identifiers.
+   */
+  oneof user_identifier {
+    /**
+     * Voximplant account name
+     */
+    string account_name = 1;
+    /**
+    * Account email
+    */
+    string account_email = 2;
+    /**
+    * Account ID
+    */
+    int64 account_id = 3;
+  }
+
+  /**
+   * Voximplant account secret.
+   */
+  oneof user_authorization {
+    /**
+     * Account session ID
+     */
+    string session_id = 4;
+    /**
+     * Account API key
+     */
+    string api_key = 5;
+  }
+}
+
+/**
+ * Response structure of the [Login] method.
+ */
+message LoginResponse {
+
+  /**
+   * Token to be passed to the `Authorization` header in subsequent requests as: "Authorization: Bearer <token>"
+   */
+  string jwt_token = 1;
+}
+

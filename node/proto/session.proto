@@ -1,0 +1,78 @@
+syntax = "proto3";
+option java_multiple_files = true;
+option java_outer_classname = "SessionApi";
+option java_package = "com.voximplant.avatar.api.session";
+/**
+ * Represents methods for interaction with avatars in unary requests mode.
+ * A long-lived session must first be initialized with CreateSession method and can then be interacted with using the SendMessage method.
+ * When the conversation is over, the long-lived session must be terminated using TerminateSession
+ * Required headers for all requests:
+ *     Authorization: Bearer <token>
+ *     avatarId: <id>
+ */
+service AvatarSession {
+  rpc CreateSession(SessionCreateRequest) returns (SessionCreateResponse) {}
+  rpc SendMessage(SessionUserUtterance) returns (AvatarSessionResponse) {}
+  rpc TerminateSession(SessionTerminateRequest) returns (SessionTerminateResponse) {}
+}
+/**
+* Request for a long-lived session creation for subsequent polling by SessionUserUtterance
+*/
+message SessionCreateRequest {
+  /**
+  * Stringified JSON object to use for Avatar initialization
+  */
+  string customData = 1;
+}
+/**
+* Response with a session id for the created long-lived session
+*/
+message SessionCreateResponse {
+  /**
+  * Long-lived session id for use in SessionUserUtterance
+  */
+  string sessionId = 1;
+}
+/**
+* Message requesting for termination of a long-lived session
+*/
+message SessionTerminateRequest {
+  /**
+  * Id of the long-lived session to terminate
+  */
+  string sessionId = 1;
+}
+/**
+* Response indicating that the long-lived session was terminated successfully
+*/
+message SessionTerminateResponse {}
+/**
+* Message expected to be sent to the avatar every time a user message is received in the conversation for a long-lived session.
+*/
+message SessionUserUtterance {
+  /**
+  * User message
+  */
+  string text = 1;
+  /**
+  * Id of the existing long-lived session that was created for the conversation
+  */
+  string sessionId = 2;
+}
+/**
+* Avatar response received when the Response() function is called in the avatar scenario.
+*/
+message AvatarSessionResponse {
+  /**
+  * Message for the user
+  */
+  string utterance = 1;
+  /**
+  * Boolean value that specifies whether the avatar's reply is final. If so, the avatar does not process any more inputs in the current conversation
+  */
+  bool isFinal = 2;
+  /**
+  * Additional data returned from the avatar
+  */
+  string customData = 3;
+}

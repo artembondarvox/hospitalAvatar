@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_outer_classname = "Api";
+option java_package = "com.voximplant.avatar.api";
+
+import "dto.proto";
+
+/**
+ * Represents the method for interaction with avatars in streaming mode.
+ * Required headers for Avatar/Conversation:
+ *     Authorization: Bearer <token>
+ *     avatarId: <id>
+ */
+service Avatar {
+  rpc Conversation(stream UserUtterance) returns (stream AvatarResponse) {}
+}
